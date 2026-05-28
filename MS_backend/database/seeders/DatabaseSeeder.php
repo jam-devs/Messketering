@@ -22,6 +22,31 @@ class DatabaseSeeder extends Seeder
             [
                 'name' => 'Admin',
                 'password' => Hash::make('admin123'),
+                'role' => 'admin',
+                'api_token' => null,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ]
+        );
+
+        DB::table('admin_users')->updateOrInsert(
+            ['email' => 'kitchen@example.com'],
+            [
+                'name' => 'Kitchen User',
+                'password' => Hash::make('kitchen123'),
+                'role' => 'kitchen',
+                'api_token' => null,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ]
+        );
+
+        DB::table('admin_users')->updateOrInsert(
+            ['email' => 'logistics@example.com'],
+            [
+                'name' => 'Logistics User',
+                'password' => Hash::make('logistics123'),
+                'role' => 'logistics',
                 'api_token' => null,
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),

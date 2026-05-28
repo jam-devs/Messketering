@@ -18,6 +18,16 @@ $router->group(['middleware' => 'admin.auth'], function () use ($router) {
     $router->get('/api/reports', 'ReportController@summary');
     $router->get('/api/schedule', 'ScheduleController@index');
 
+    $router->get('/api/admin/{resource}', 'AdminDataController@index');
+    $router->get('/api/admin/{resource}/{id}', 'AdminDataController@show');
+    $router->post('/api/admin/{resource}', 'AdminDataController@store');
+    $router->put('/api/admin/{resource}/{id}', 'AdminDataController@update');
+    $router->delete('/api/admin/{resource}/{id}', 'AdminDataController@destroy');
+
+    $router->put('/api/admin/orders/{id}/status', 'AdminDataController@updateOrderStatus');
+    $router->put('/api/admin/orders/{id}/kitchen-status', 'AdminDataController@updateKitchenStatus');
+    $router->put('/api/admin/orders/{id}/logistics-status', 'AdminDataController@updateLogisticsStatus');
+
     $router->get('/api/customers', 'CustomerController@index');
     $router->get('/api/customers/{id}', 'CustomerController@show');
     $router->put('/api/customers/{id}', 'CustomerController@update');
