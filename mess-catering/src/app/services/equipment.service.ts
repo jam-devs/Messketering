@@ -92,12 +92,17 @@ export interface AllocationConflict {
 @Injectable({ providedIn: 'root' })
 export class EquipmentService {
   private readonly equipment$ = new BehaviorSubject<EquipmentItem[]>([]);
+  private readonly loading$ = new BehaviorSubject(true);
+  private readonly fallbackUsed$ = new BehaviorSubject(false);
 
   constructor(private api: AdminApiService) {
     this.refresh();
   }
 
   private refresh() {
+    this.loading$.next(true);
+    this.fallbackUsed$.next(false);
+
     this.api.get<EquipmentItem>('equipment').subscribe({
       next: (items) => {
         this.equipment$.next(items.map((item) => ({
@@ -105,15 +110,26 @@ export class EquipmentService {
           createdAt: new Date(item.createdAt),
           updatedAt: new Date(item.updatedAt),
         })));
+        this.loading$.next(false);
       },
       error: () => {
         this.equipment$.next(SEED);
+        this.fallbackUsed$.next(true);
+        this.loading$.next(false);
       },
     });
   }
 
   getAll(): Observable<EquipmentItem[]> {
     return this.equipment$.asObservable();
+  }
+
+  getLoadingState(): Observable<boolean> {
+    return this.loading$.asObservable();
+  }
+
+  getFallbackStatus(): Observable<boolean> {
+    return this.fallbackUsed$.asObservable();
   }
 
   getAvailable(): Observable<EquipmentItem[]> {

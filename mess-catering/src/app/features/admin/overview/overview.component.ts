@@ -26,6 +26,15 @@ import { KitchenStatus, LogisticsStatus } from '../../../models/order.model';
       subtitle="Centralized catering operations — kitchen, logistics, and bookings"
     />
 
+    @if (dashboardState$ | async; as state) {
+      @if (state.isLoading) {
+        <mat-progress-bar mode="indeterminate" />
+      }
+      @if (state.isUsingFallback) {
+        <mat-card class="state-banner">Using sample dashboard data while the API is unavailable. The admin view will switch back to live data automatically when the backend is healthy.</mat-card>
+      }
+    }
+
     @if (metrics$ | async; as m) {
       <div class="stats-grid">
         <mat-card class="stat-card"><mat-icon>receipt_long</mat-icon><div><span class="stat-label">Total Bookings</span><span class="stat-value">{{ m.totalOrders }}</span></div></mat-card>
@@ -80,6 +89,7 @@ export class OverviewComponent {
   private readonly dashboardService = inject(DashboardService);
   private readonly orderService = inject(OrderService);
   readonly metrics$ = this.dashboardService.getMetrics();
+  readonly dashboardState$ = this.dashboardService.getDashboardState();
   readonly recentOrders$ = this.orderService.getRecent(6);
   readonly cols = ['bookingRef', 'event', 'date', 'kitchen', 'logistics'];
   kLabel = (s: KitchenStatus) => getKitchenLabel(s);

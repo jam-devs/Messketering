@@ -4,7 +4,7 @@ import { AsyncPipe, DatePipe } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
-import { combineLatest, map, startWith, Subject, switchMap } from 'rxjs';
+import { combineLatest, distinctUntilChanged, map, merge, startWith, Subject, switchMap } from 'rxjs';
 import { PageHeaderComponent } from '../../../shared/components/page-header.component';
 import { SearchBarComponent } from '../../../shared/components/search-bar.component';
 import { ScheduleService } from '../../../services/schedule.service';
@@ -52,7 +52,10 @@ export class ScheduleComponent implements OnInit {
 
   readonly events$ = combineLatest([
     toObservable(this.viewDate),
-    this.search$.pipe(startWith('')),
+    merge(this.search$, this.globalSearch.search$).pipe(
+      startWith(this.globalSearch.current || ''),
+      distinctUntilChanged()
+    ),
   ]).pipe(
     switchMap(([d, q]) =>
       this.scheduleService.getByMonth(d.getFullYear(), d.getMonth()).pipe(

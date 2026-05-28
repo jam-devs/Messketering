@@ -17,7 +17,7 @@ import { AuthService } from '../../../services/auth.service';
       <mat-card class="login-card">
         <div class="login-brand">
           <mat-icon>restaurant_menu</mat-icon>
-          <h1>CaterDash</h1>
+          <h1>MessCatering</h1>
           <p>Catering Operations Dashboard</p>
         </div>
         <form (ngSubmit)="onSubmit()">

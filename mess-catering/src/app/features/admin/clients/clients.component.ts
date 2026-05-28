@@ -7,7 +7,7 @@ import { PageHeaderComponent } from '../../../shared/components/page-header.comp
 import { SearchBarComponent } from '../../../shared/components/search-bar.component';
 import { ClientService } from '../../../services/client.service';
 import { GlobalSearchService } from '../../../services/global-search.service';
-import { startWith, Subject, switchMap } from 'rxjs';
+import { distinctUntilChanged, merge, startWith, Subject, switchMap } from 'rxjs';
 
 @Component({
   selector: 'app-clients',
@@ -37,7 +37,11 @@ export class ClientsComponent implements OnInit {
   readonly globalSearch = inject(GlobalSearchService);
   private readonly search$ = new Subject<string>();
   readonly cols = ['name', 'contact', 'address', 'since'];
-  readonly clients$ = this.search$.pipe(startWith(''), switchMap((q) => this.clientService.search(q)));
+  readonly clients$ = merge(this.search$, this.globalSearch.search$).pipe(
+    startWith(this.globalSearch.current || ''),
+    distinctUntilChanged(),
+    switchMap((q) => this.clientService.search(q))
+  );
 
   ngOnInit(): void {
     const q = this.globalSearch.current;

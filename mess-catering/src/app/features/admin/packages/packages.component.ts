@@ -7,7 +7,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import { combineLatest, startWith, Subject, switchMap } from 'rxjs';
+import { combineLatest, distinctUntilChanged, merge, startWith, Subject, switchMap } from 'rxjs';
 import { PageHeaderComponent } from '../../../shared/components/page-header.component';
 import { SearchBarComponent } from '../../../shared/components/search-bar.component';
 import { PackageService } from '../../../services/package.service';
@@ -85,7 +85,10 @@ export class PackagesComponent implements OnInit {
   isAdmin = () => this.auth.hasRole('admin');
 
   readonly packages$ = combineLatest([
-    this.search$.pipe(startWith(this.globalSearch.current)),
+    merge(this.search$, this.globalSearch.search$).pipe(
+      startWith(this.globalSearch.current || ''),
+      distinctUntilChanged()
+    ),
   ]).pipe(switchMap(([q]) => this.packageService.search(q)));
 
   ngOnInit(): void {

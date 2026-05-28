@@ -20,7 +20,7 @@ interface NavItem {
       <div class="brand">
         <mat-icon>restaurant</mat-icon>
         <div>
-          <strong>CaterDash</strong>
+          <strong>MessCatering</strong>
           <span>Admin Dashboard</span>
         </div>
       </div>

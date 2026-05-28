@@ -8,7 +8,7 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { combineLatest, map, startWith, Subject, switchMap } from 'rxjs';
+import { combineLatest, distinctUntilChanged, map, merge, startWith, Subject, switchMap } from 'rxjs';
 import { PageHeaderComponent } from '../../../shared/components/page-header.component';
 import { SearchBarComponent } from '../../../shared/components/search-bar.component';
 import { EquipmentService } from '../../../services/equipment.service';
@@ -75,7 +75,11 @@ export class EquipmentComponent implements OnInit {
   private readonly search$ = new Subject<string>();
   readonly cols = ['name', 'price', 'qty', 'status', 'actions'];
 
-  readonly equipment$ = this.search$.pipe(startWith(''), switchMap((q) => this.equipmentService.search(q)));
+  readonly equipment$ = merge(this.search$, this.globalSearch.search$).pipe(
+    startWith(this.globalSearch.current || ''),
+    distinctUntilChanged(),
+    switchMap((q) => this.equipmentService.search(q))
+  );
 
   readonly conflicts$ = combineLatest([this.orderService.getAll(), this.equipmentService.getAll()]).pipe(
     map(([orders]) => {

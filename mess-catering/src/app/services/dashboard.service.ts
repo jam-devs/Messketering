@@ -56,4 +56,18 @@ export class DashboardService {
       })
     );
   }
+
+  getDashboardState(): Observable<{ isLoading: boolean; isUsingFallback: boolean }> {
+    return combineLatest([
+      this.orderService.getLoadingState(),
+      this.orderService.getFallbackStatus(),
+      this.equipmentService.getLoadingState(),
+      this.equipmentService.getFallbackStatus(),
+    ]).pipe(
+      map(([orderLoading, orderFallback, equipmentLoading, equipmentFallback]) => ({
+        isLoading: orderLoading || equipmentLoading,
+        isUsingFallback: orderFallback || equipmentFallback,
+      }))
+    );
+  }
 }

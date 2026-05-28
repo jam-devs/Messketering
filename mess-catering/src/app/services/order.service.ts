@@ -118,6 +118,8 @@ const SEED: Order[] = [
 @Injectable({ providedIn: 'root' })
 export class OrderService {
   private readonly orders$ = new BehaviorSubject<Order[]>([]);
+  private readonly loading$ = new BehaviorSubject(true);
+  private readonly fallbackUsed$ = new BehaviorSubject(false);
 
   constructor(
     private equipmentService: EquipmentService,
@@ -128,6 +130,9 @@ export class OrderService {
   }
 
   private refresh() {
+    this.loading$.next(true);
+    this.fallbackUsed$.next(false);
+
     this.api.get<Order>('orders').subscribe({
       next: (orders) => {
         const mapped = orders.map((order) => ({
@@ -138,10 +143,13 @@ export class OrderService {
         }));
         this.orders$.next(mapped);
         this.equipmentService.syncAvailability(mapped);
+        this.loading$.next(false);
       },
       error: () => {
         this.orders$.next(SEED);
         this.equipmentService.syncAvailability(SEED);
+        this.fallbackUsed$.next(true);
+        this.loading$.next(false);
       },
     });
   }
@@ -306,6 +314,14 @@ export class OrderService {
         };
       })
     );
+  }
+
+  getLoadingState(): Observable<boolean> {
+    return this.loading$.asObservable();
+  }
+
+  getFallbackStatus(): Observable<boolean> {
+    return this.fallbackUsed$.asObservable();
   }
 
   getRecent(limit = 5): Observable<Order[]> {

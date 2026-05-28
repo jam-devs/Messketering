@@ -8,7 +8,7 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { startWith, Subject, switchMap } from 'rxjs';
+import { distinctUntilChanged, merge, startWith, Subject, switchMap } from 'rxjs';
 import { PageHeaderComponent } from '../../../shared/components/page-header.component';
 import { SearchBarComponent } from '../../../shared/components/search-bar.component';
 import { FoodMenuService } from '../../../services/food-menu.service';
@@ -95,8 +95,9 @@ export class FoodMenuManagementComponent implements OnInit {
   readonly labels = FOOD_CATEGORY_LABELS;
   readonly cols = ['name', 'category', 'price', 'serves', 'status', 'actions'];
 
-  readonly items$ = this.search$.pipe(
-    startWith(''),
+  readonly items$ = merge(this.search$, this.globalSearch.search$).pipe(
+    startWith(this.globalSearch.current || ''),
+    distinctUntilChanged(),
     switchMap((q) => this.foodMenu.search(q, true))
   );
 

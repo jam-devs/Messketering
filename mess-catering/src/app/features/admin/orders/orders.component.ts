@@ -6,7 +6,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { combineLatest, map, startWith, Subject, switchMap } from 'rxjs';
+import { distinctUntilChanged, merge, startWith, Subject, switchMap } from 'rxjs';
 import { PageHeaderComponent } from '../../../shared/components/page-header.component';
 import { SearchBarComponent } from '../../../shared/components/search-bar.component';
 import { OrderService } from '../../../services/order.service';
@@ -88,8 +88,9 @@ export class OrdersComponent implements OnInit {
 
   isAdmin = () => this.auth.hasRole('admin');
 
-  readonly orders$ = this.search$.pipe(
-    startWith(this.globalSearch.current),
+  readonly orders$ = merge(this.search$, this.globalSearch.search$).pipe(
+    startWith(this.globalSearch.current || ''),
+    distinctUntilChanged(),
     switchMap((q) => this.orderService.search(q))
   );
 
