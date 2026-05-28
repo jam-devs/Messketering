@@ -12,6 +12,7 @@ import { KitchenMonitoringComponent } from './features/admin/kitchen/kitchen-mon
 import { LogisticsMonitoringComponent } from './features/admin/logistics/logistics-monitoring.component';
 import { ReportsComponent } from './features/admin/reports/reports.component';
 import { FoodMenuManagementComponent } from './features/admin/food-menu/food-menu-management.component';
+import { InboxComponent } from './features/admin/inbox/inbox.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'admin', pathMatch: 'full' },
@@ -28,6 +29,7 @@ export const routes: Routes = [
       { path: 'equipment', component: EquipmentComponent },
       { path: 'clients', component: ClientsComponent },
       { path: 'schedule', component: ScheduleComponent },
+      { path: 'inbox', component: InboxComponent },
       { path: 'kitchen', component: KitchenMonitoringComponent },
       { path: 'logistics', component: LogisticsMonitoringComponent },
       { path: 'reports', component: ReportsComponent },

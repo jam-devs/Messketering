@@ -34,7 +34,8 @@ interface NavItem {
             (item.route === '/admin/packages' && auth.hasRole('admin')) ||
             (item.route === '/admin/equipment' && auth.hasRole('admin')) ||
             (item.route === '/admin/clients' && auth.hasRole('admin')) ||
-            (item.route === '/admin/schedule' && auth.hasRole('admin'))
+            (item.route === '/admin/schedule' && auth.hasRole('admin')) ||
+            (item.route === '/admin/inbox' && auth.hasRole('admin'))
           " [routerLink]="item.route" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: item.route === '/admin' }">
             <mat-icon>{{ item.icon }}</mat-icon>
             <span>{{ item.label }}</span>
@@ -75,6 +76,7 @@ export class AdminSidebarComponent {
     { label: 'Equipment', icon: 'inventory_2', route: '/admin/equipment' },
     { label: 'Clients', icon: 'groups', route: '/admin/clients' },
     { label: 'Event Schedule', icon: 'calendar_month', route: '/admin/schedule' },
+    { label: 'Inbox', icon: 'mail', route: '/admin/inbox' },
   ];
 
   readonly opsNav: NavItem[] = [

@@ -107,6 +107,30 @@ Password: admin123
 
 Change the password after logging in.
 
+## Gmail Inbox Setup (Dashboard)
+
+The admin dashboard now includes an Inbox page at:
+
+```text
+/admin/inbox
+```
+
+To enable Gmail access, set these values in `MS_backend/.env`:
+
+```text
+GMAIL_CLIENT_ID=your-google-oauth-client-id
+GMAIL_CLIENT_SECRET=your-google-oauth-client-secret
+GMAIL_REDIRECT_URI=http://localhost:4200/admin/inbox
+```
+
+Google Cloud Console requirements:
+
+- Enable Gmail API
+- Create OAuth 2.0 Web application credentials
+- Add `http://localhost:4200/admin/inbox` as an authorized redirect URI
+
+After setting env values, restart backend (`php -S localhost:8000 -t public`) and use the **Connect Gmail** button in Inbox.
+
 ## Useful Commands
 
 Run backend smoke test:

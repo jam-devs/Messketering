@@ -184,3 +184,25 @@ export interface ScheduleEvent {
   address: string | null;
   items: ScheduleItem[];
 }
+
+export interface GmailStatus {
+  connected: boolean;
+  expires_at: number | null;
+  scope: string | null;
+  email_address: string | null;
+}
+
+export interface GmailAuthPayload {
+  auth_url: string;
+  state: string;
+}
+
+export interface GmailMessage {
+  id: string;
+  thread_id: string;
+  from: string;
+  subject: string;
+  date: string;
+  snippet: string;
+  internal_date: string;
+}

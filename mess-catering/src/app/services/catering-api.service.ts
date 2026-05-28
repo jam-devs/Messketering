@@ -11,6 +11,9 @@ import {
   CustomerDetail,
   CustomerPayload,
   DashboardSummary,
+  GmailAuthPayload,
+  GmailMessage,
+  GmailStatus,
   LoginResponse,
   MenuItem,
   MenuItemPayload,
@@ -80,6 +83,35 @@ export class CateringApiService {
 
   getSchedule(): Observable<ApiListResponse<ScheduleEvent>> {
     return this.withAuthHandling(this.http.get<ApiListResponse<ScheduleEvent>>('/api/schedule', this.authOptions()));
+  }
+
+  getEmailStatus(): Observable<ApiItemResponse<GmailStatus>> {
+    return this.withAuthHandling(this.http.get<ApiItemResponse<GmailStatus>>('/api/email/status', this.authOptions()));
+  }
+
+  getEmailAuthUrl(): Observable<ApiItemResponse<GmailAuthPayload>> {
+    return this.withAuthHandling(this.http.get<ApiItemResponse<GmailAuthPayload>>('/api/email/auth-url', this.authOptions()));
+  }
+
+  connectEmail(code: string, state: string): Observable<ApiItemResponse<GmailStatus>> {
+    return this.withAuthHandling(
+      this.http.post<ApiItemResponse<GmailStatus>>('/api/email/connect', { code, state }, this.authOptions())
+    );
+  }
+
+  disconnectEmail(): Observable<{ status: string; message: string }> {
+    return this.withAuthHandling(
+      this.http.post<{ status: string; message: string }>('/api/email/disconnect', {}, this.authOptions())
+    );
+  }
+
+  getEmailMessages(maxResults = 20): Observable<ApiListResponse<GmailMessage>> {
+    return this.withAuthHandling(
+      this.http.get<ApiListResponse<GmailMessage>>('/api/email/messages', {
+        ...this.authOptions(),
+        params: { maxResults },
+      })
+    );
   }
 
   updateCustomer(id: number, payload: CustomerPayload): Observable<ApiItemResponse<Customer>> {

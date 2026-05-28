@@ -18,6 +18,13 @@ $router->group(['middleware' => 'admin.auth'], function () use ($router) {
     $router->get('/api/reports', 'ReportController@summary');
     $router->get('/api/schedule', 'ScheduleController@index');
 
+    $router->get('/api/email/status', 'GmailController@status');
+    $router->get('/api/email/auth-url', 'GmailController@authUrl');
+    $router->post('/api/email/connect', 'GmailController@connect');
+    $router->post('/api/email/disconnect', 'GmailController@disconnect');
+    $router->get('/api/email/messages', 'GmailController@messages');
+    $router->get('/api/email/messages/{id}', 'GmailController@message');
+
     $router->get('/api/admin/{resource}', 'AdminDataController@index');
     $router->get('/api/admin/{resource}/{id}', 'AdminDataController@show');
     $router->post('/api/admin/{resource}', 'AdminDataController@store');
